@@ -1,0 +1,31 @@
+{
+    "name": "larryli/yii2-pushbear",
+    "description": "PushBear Yii2 组件，使用 yii2-httpclient 包装 API。并提供 PushBearTarget 日志处理。",
+    "homepage": "https://github.com/larryli/yii2-pushbear",
+    "minimum-stability": "stable",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Larry Li",
+            "email": "larryli@qq.com"
+        }
+    ],
+    "require": {
+        "yiisoft/yii2-httpclient": "~2.0.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "larryli\\yii\\pushbear\\": "src/"
+        }
+    },
+    "repositories": {
+        "packagist": {
+            "type": "composer",
+            "url": "https://packagist.phpcomposer.com"
+        },
+        "asset-packagist": {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
+        }
+    }
+}
