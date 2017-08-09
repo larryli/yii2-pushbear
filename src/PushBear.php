@@ -22,6 +22,11 @@ class PushBear extends Component
      */
     public $sendKey;
     /**
+     * @var string Http Client Transport
+     * @see https://github.com/yiisoft/yii2-httpclient/blob/master/docs/guide/usage-transports.md
+     */
+    public $transport;
+    /**
      * @var Client
      */
     private $_httpClient;
@@ -69,13 +74,18 @@ class PushBear extends Component
     protected function getHttpClient()
     {
         if (!is_object($this->_httpClient)) {
-            $this->_httpClient = Yii::createObject([
+            $config = [
                 'class' => Client::class,
                 'baseUrl' => $this->baseUrl,
                 'responseConfig' => [
                     'format' => Client::FORMAT_JSON,
                 ],
-            ]);
+            ];
+            if (!empty($this->transport)) {
+                $config['transport'] = $this->transport;
+            }
+            /** @var Client _httpClient */
+            $this->_httpClient = Yii::createObject($config);
         }
         return $this->_httpClient;
     }
