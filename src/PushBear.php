@@ -33,6 +33,7 @@ class PushBear extends Component
 
     /**
      * @inheritdoc
+     * @throws InvalidConfigException
      */
     public function init()
     {
@@ -47,8 +48,8 @@ class PushBear extends Component
      *
      * @param string $text
      * @param string $description
-     * @return array
-     * @throws \Exception
+     * @return array|false
+     * @throws InvalidConfigException
      */
     public function sub($text, $description = '')
     {
@@ -60,16 +61,24 @@ class PushBear extends Component
             $data['desp'] = $description;
         }
 
-        $response = $this->getHttpClient()->post('sub', $data)->send();
-        if (!$response->isOk) {
-            throw new Exception('Unable to sub message.');
+        try {
+            Yii::debug("Post message: " . var_export($data), __METHOD__);
+            $response = $this->getHttpClient()->post('sub', $data)->send();
+            Yii::debug("Post message return: {$response->content}", __METHOD__);
+            if (!$response->isOk) {
+                Yii::error("Unable to sub message: {$response->content}", __METHOD__);
+            }
+            // {code: 0, message: "", data: "1条消息已成功推送到发送队列", created: "2017-08-09 14:50:34"}
+            return $response->data;
+        } catch (Exception $e) {
+            Yii::error("Post message failed: {$e->getMessage()}", __METHOD__);
+            return false;
         }
-        // {code: 0, message: "", data: "1条消息已成功推送到发送队列", created: "2017-08-09 14:50:34"}
-        return $response->data;
     }
 
     /**
      * @return Client
+     * @throws InvalidConfigException
      */
     protected function getHttpClient()
     {

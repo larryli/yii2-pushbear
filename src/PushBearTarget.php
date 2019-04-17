@@ -18,6 +18,7 @@ class PushBearTarget extends Target
 
     /**
      * @inheritdoc
+     * @throws \yii\base\InvalidConfigException
      */
     public function init()
     {
@@ -27,6 +28,7 @@ class PushBearTarget extends Target
 
     /**
      * Sends log messages
+     * @throws \yii\base\InvalidConfigException
      */
     public function export()
     {
