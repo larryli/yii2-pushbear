@@ -6,7 +6,7 @@ use yii\helpers\StringHelper;
 use yii\di\Instance;
 
 /**
- * PushBearTarget 日志处理
+ * PushBear Target
  */
 class Target extends \yii\log\Target
 {
