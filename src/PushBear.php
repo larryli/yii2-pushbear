@@ -39,7 +39,7 @@ class PushBear extends Component
     public function init()
     {
         parent::init();
-        if (empty($this->sendkey)) {
+        if (empty($this->sendKey)) {
             throw new InvalidConfigException('The PushBear::sendKey must be set.');
         }
     }

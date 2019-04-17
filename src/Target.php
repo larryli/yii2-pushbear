@@ -6,7 +6,7 @@ use yii\helpers\StringHelper;
 use yii\di\Instance;
 
 /**
- * PushBear Target
+ * PushBearTarget 日志处理
  */
 class Target extends \yii\log\Target
 {
@@ -32,8 +32,8 @@ class Target extends \yii\log\Target
      */
     public function export()
     {
-        $message = reset($this->messages);
-        $text = StringHelper::truncate($message, 80);
+        list($text, $level, $category, $timestamp) = reset($this->messages);
+        $text = StringHelper::truncate($text, 80);
         $messages = array_map([$this, 'formatMessage'], $this->messages);
         $body = wordwrap(implode("\n\n", $messages), 70);
         $this->pushBear->subOrFail($text, $body);
