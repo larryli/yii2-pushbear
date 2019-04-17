@@ -16,7 +16,7 @@ PushBear Yii2 组件，使用 yii2-httpclient 包装 API。并提供 PushBearTar
 
 或者增加：
 
-    "larryli/yii2-pushbear": "dev-master"
+    "larryli/yii2-pushbear": "~1.0"
 
 ## Yii 组件配置
 
