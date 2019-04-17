@@ -3,13 +3,12 @@
 namespace larryli\yii\pushbear;
 
 use yii\helpers\StringHelper;
-use yii\log\Target;
 use yii\di\Instance;
 
 /**
  * PushBearTarget 日志处理
  */
-class PushBearTarget extends Target
+class Target extends \yii\log\Target
 {
     /**
      * @var string | PushBear
@@ -28,6 +27,7 @@ class PushBearTarget extends Target
 
     /**
      * Sends log messages
+     *
      * @throws \yii\base\InvalidConfigException
      */
     public function export()
@@ -36,6 +36,6 @@ class PushBearTarget extends Target
         $text = StringHelper::truncate($message, 80);
         $messages = array_map([$this, 'formatMessage'], $this->messages);
         $body = wordwrap(implode("\n\n", $messages), 70);
-        $this->pushBear->sub($text, $body);
+        $this->pushBear->subOrFail($text, $body);
     }
 }

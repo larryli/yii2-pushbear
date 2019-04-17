@@ -6,10 +6,9 @@ use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\httpclient\Client;
-use yii\httpclient\Exception;
 
 /**
- * PushBear 组件
+ * PushBear Component
  */
 class PushBear extends Component
 {
@@ -27,11 +26,13 @@ class PushBear extends Component
      */
     public $transport;
     /**
-     * @var Client
+     * @var Client Http Client
      */
     private $_httpClient;
 
     /**
+     * Init
+     *
      * @inheritdoc
      * @throws InvalidConfigException
      */
@@ -44,12 +45,13 @@ class PushBear extends Component
     }
 
     /**
-     * 发送系统消息
+     * Sub message
      *
      * @param string $text
      * @param string $description
-     * @return array|false
+     * @return array
      * @throws InvalidConfigException
+     * @throws Exception
      */
     public function sub($text, $description = '')
     {
@@ -62,21 +64,46 @@ class PushBear extends Component
         }
 
         try {
-            Yii::debug("Post message: " . var_export($data), __METHOD__);
+            Yii::debug("Sub message data: " . var_export($data), __METHOD__);
             $response = $this->getHttpClient()->post('sub', $data)->send();
-            Yii::debug("Post message return: {$response->content}", __METHOD__);
+            Yii::debug("Sub message return: {$response->content}", __METHOD__);
             if (!$response->isOk) {
-                Yii::error("Unable to sub message: {$response->content}", __METHOD__);
+                if (isset($response->data['code']) && $response->data['message']) {
+                    Yii::error("Sub message failed: #{$response->data['code']}, {$response->data['message']}", __METHOD__);
+                    throw new Exception($response->data['message'], $response->data['code']);
+                } else {
+                    Yii::error("Sub message failed: {$response->content}", __METHOD__);
+                    throw new Exception($response->content);
+                }
             }
             // {code: 0, message: "", data: "1条消息已成功推送到发送队列", created: "2017-08-09 14:50:34"}
             return $response->data;
+        } catch (\yii\httpclient\Exception $e) {
+            Yii::error("sub message failed: #{$e->getCode()}, {$e->getMessage()}", __METHOD__);
+            throw new Exception($e->getMessage(), $e->getCode(), $e);
+        }
+    }
+
+    /**
+     * Sub message or fail
+     *
+     * @param $text
+     * @param string $description
+     * @return array|false
+     * @throws InvalidConfigException
+     */
+    public function subOrFail($text, $description = '')
+    {
+        try {
+            return $this->sub($text, $description);
         } catch (Exception $e) {
-            Yii::error("Post message failed: {$e->getMessage()}", __METHOD__);
             return false;
         }
     }
 
     /**
+     * Get http client
+     *
      * @return Client
      * @throws InvalidConfigException
      */

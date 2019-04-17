@@ -1,6 +1,6 @@
 # yii2-pushbear
 
-PushBear Yii2 组件，使用 yii2-httpclient 包装 API。并提供 PushBearTarget 日志处理。
+PushBear Yii2 组件，使用 yii2-httpclient 包装 API。并提供 Target 日志处理。
 
 ## 创建消息通道
 
@@ -32,7 +32,11 @@ PushBear Yii2 组件，使用 yii2-httpclient 包装 API。并提供 PushBearTar
 ## 使用
 
 ```php
-Yii::$app->pushBear->sub('标题', "# 内容标题\n\n- 列表 1\n- 列表 2\n\n[链接](https://github.com/larryli/yii2-pushbear)");
+try {
+    Yii::$app->pushBear->sub('标题', "# 内容标题\n\n- 列表 1\n- 列表 2\n\n[链接](https://github.com/larryli/yii2-pushbear)");
+} catch (\larryli\yii\pushbear\Exception $e) {
+    echo $e->getMessage();
+}
 ```
 
 ## 日志处理
@@ -42,9 +46,14 @@ Yii::$app->pushBear->sub('标题', "# 内容标题\n\n- 列表 1\n- 列表 2\n\n
     'log' => [
          'targets' => [
             [
-                'class' => \larryli\yii\pushbear\PushBearTarget::class,
-                'pushBear' => 'pushBear',
+                'class' => \larryli\yii\pushbear\Target::class,
+                // 'pushBear' => 'pushBear',
                 'levels' => ['error', 'warning'],
+                'except' => [ // except self
+                    'larryli\yii\pushbear\*',
+                    'yii\httpclient\*',
+                ],
+                'logVars' => [], // disable $_GET and others
             ],
        ],
    ],
